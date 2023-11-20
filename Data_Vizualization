@@ -1,0 +1,213 @@
+import requests
+from IPython.display import display, HTML, Image
+from ipywidgets import interact_manual
+import pandas as pd
+
+def getArtistInfo(artist):
+    url = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&api_key=eba5615cbdd24c28a49528b3e498f467&format=json"
+    api_key = "eba5615cbdd24c28a49528b3e498f467"
+    headers = {'apikey' : api_key, 'artist' : artist}
+    response = requests.get(url, params = headers)
+    response.raise_for_status()
+    info = response.json()
+    return info
+
+def getArtistName(artist_info):
+    artist_name = artist_info['artist']['name']
+    return artist_name
+
+def getArtistSummary(artist_info):
+    artist_summary = artist_info['artist']['bio']['summary']
+    return artist_summary
+
+def getTopAlbums(artist):
+    url = "http://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&api_key=eba5615cbdd24c28a49528b3e498f467&format=json"
+    api_key = "eba5615cbdd24c28a49528b3e498f467"
+    headers = {'apikey' : api_key, 'artist' : artist}
+    response = requests.get(url, params = headers)
+    response.raise_for_status()
+    info = response.json()
+    return info
+
+def getAlbum1(top_albums):
+    album_1 = top_albums['topalbums']['album'][0]['name']
+    return album_1
+
+def getAlbum1Image(top_albums):
+    album_1_image = top_albums['topalbums']['album'][0]['image'][2]["#text"]
+    return album_1_image
+    
+def getAlbum2(top_albums):
+    album_2 = top_albums['topalbums']['album'][1]['name']
+    return album_2
+
+def getAlbum2Image(top_albums):
+    album_2_image = top_albums['topalbums']['album'][1]['image'][2]["#text"]
+    return album_2_image
+
+def getAlbum3(top_albums):
+    album_3 = top_albums['topalbums']['album'][2]['name']
+    return album_3
+
+def getAlbum3Image(top_albums):
+    album_3_image = top_albums['topalbums']['album'][2]['image'][2]["#text"]
+    return album_3_image
+
+def getAlbum4(top_albums):
+    album_4 = top_albums['topalbums']['album'][3]['name']
+    return album_4
+
+def getAlbum4Image(top_albums):
+    album_4_image = top_albums['topalbums']['album'][3]['image'][2]["#text"]
+    return album_4_image
+
+def getAlbum5(top_albums):
+    album_5 = top_albums['topalbums']['album'][4]['name']
+    return album_5
+
+def getAlbum5Image(top_albums):
+    album_5_image = top_albums['topalbums']['album'][4]['image'][2]["#text"]
+    return album_5_image
+
+def getTopTracks(artist):
+    url = "https://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&api_key=eba5615cbdd24c28a49528b3e498f467&format=json"
+    api_key = "eba5615cbdd24c28a49528b3e498f467"
+    headers = {'apikey' : api_key, 'artist' : artist}
+    response = requests.get(url, params = headers)
+    response.raise_for_status()
+    info = response.json()
+    return info
+
+def getTrack1(top_tracks):
+    track_1 = top_tracks['toptracks']['track'][0]['name']
+    return track_1
+
+def getTrack2(top_tracks):
+    track_2 = top_tracks['toptracks']['track'][1]['name']
+    return track_2
+
+def getTrack3(top_tracks):
+    track_3 = top_tracks['toptracks']['track'][2]['name']
+    return track_3
+
+def getTrack4(top_tracks):
+    track_4 = top_tracks['toptracks']['track'][3]['name']
+    return track_4
+
+def getTrack5(top_tracks):
+    track_5 = top_tracks['toptracks']['track'][4]['name']
+    return track_5
+
+def getSimilar(artist):
+    url = "http://ws.audioscrobbler.com/2.0/?method=artist.getsimilar&api_key=eba5615cbdd24c28a49528b3e498f467&format=json"
+    api_key = "eba5615cbdd24c28a49528b3e498f467"
+    headers = {'apikey' : api_key, 'artist' : artist}
+    response = requests.get(url, params = headers)
+    response.raise_for_status()
+    info = response.json()
+    return info 
+
+def getSimilar1(similar_artists):
+    similar_1 = similar_artists['similarartists']['artist'][0]['name']
+    return similar_1
+
+def getSimilar2(similar_artists):
+    similar_2 = similar_artists['similarartists']['artist'][1]['name']
+    return similar_2
+
+def getSimilar3(similar_artists):
+    similar_3 = similar_artists['similarartists']['artist'][2]['name']
+    return similar_3
+
+def getSimilar4(similar_artists):
+    similar_4 = similar_artists['similarartists']['artist'][3]['name']
+    return similar_4
+
+def getSimilar5(similar_artists):
+    similar_5 = similar_artists['similarartists']['artist'][4]['name']
+    return similar_5
+
+def getTopTags(artist):
+    url = "https://ws.audioscrobbler.com/2.0/?method=artist.gettoptags&api_key=eba5615cbdd24c28a49528b3e498f467&format=json"
+    api_key = "eba5615cbdd24c28a49528b3e498f467"
+    headers = {'apikey' : api_key, 'artist' : artist}
+    response = requests.get(url, params = headers)
+    response.raise_for_status()
+    info = response.json()
+    return info
+
+def getTagList(tags):
+    tag_1 = tags['toptags']['tag'][0]['name']
+    tag_2 = tags['toptags']['tag'][1]['name']
+    tag_3 = tags['toptags']['tag'][2]['name']
+    tag_4 = tags['toptags']['tag'][3]['name']
+    tag_list = (tag_1, tag_2, tag_3, tag_4)
+    return tag_list
+
+def MakeTagsTable(tag_list):
+    tag_df = pd.DataFrame({ 'Tags' : tag_list})
+    blankIndex = [''] * len(tag_df)
+    tag_df.index = blankIndex
+    return tag_df
+
+display(HTML("<h1> Music Artist Info ! </h1>"))
+@interact_manual(artist = "")
+def main(artist):
+    artist_info = getArtistInfo(artist)
+    name = getArtistName(artist_info)
+    summary = getArtistSummary(artist_info)
+    tags = getTopTags(artist)
+    tag_list = getTagList(tags)
+    tag_df = MakeTagsTable(tag_list)
+    top_albums = getTopAlbums(artist)
+    album_1 = getAlbum1(top_albums)
+    album_1_image = getAlbum1Image(top_albums)
+    album_2 = getAlbum2(top_albums)
+    album_2_image = getAlbum2Image(top_albums)
+    album_3 = getAlbum3(top_albums)
+    album_3_image = getAlbum3Image(top_albums)
+    album_4 = getAlbum4(top_albums)
+    album_4_image = getAlbum4Image(top_albums)
+    album_5 = getAlbum5(top_albums)
+    album_5_image = getAlbum5Image(top_albums)
+    top_tracks = getTopTracks(artist)
+    track_1 = getTrack1(top_tracks)
+    track_2 = getTrack2(top_tracks)
+    track_3 = getTrack3(top_tracks)
+    track_4 = getTrack4(top_tracks)
+    track_5 = getTrack4(top_tracks)
+    similar_artists = getSimilar(artist)
+    similar_1 = getSimilar1(similar_artists)
+    similar_2 = getSimilar2(similar_artists)
+    similar_3 = getSimilar3(similar_artists)
+    similar_4 = getSimilar4(similar_artists)
+    similar_5 = getSimilar5(similar_artists)
+    display(HTML(f"<h1>{name}</h1>"))
+    display(HTML(f"<h2>General summary:</h2>"))
+    display(HTML(f"<p>{summary}"))
+    display(HTML(f"<h2>Tags associated with this artist:</h2>"))
+    display(tag_df)
+    display(HTML(f"<h2>Top tracks:</h2>"))
+    display(HTML(f"<p>{track_1}"))
+    display(HTML(f"<p>{album_2}"))
+    display(HTML(f"<p>{album_3}"))
+    display(HTML(f"<p>{album_4}"))
+    display(HTML(f"<p>{album_5}"))
+    display(HTML(f"<h2>Top albums:</h2>"))
+    display(HTML(f"<p>{album_1}"))
+    display(Image(url = album_1_image))
+    display(HTML(f"<p>{album_2}"))
+    display(Image(url = album_2_image))
+    display(HTML(f"<p>{album_3}"))
+    display(Image(url = album_3_image))
+    display(HTML(f"<p>{album_4}"))
+    display(Image(url = album_4_image))
+    display(HTML(f"<p>{album_5}"))
+    display(Image(url = album_5_image))
+    display(HTML(f"<h2>Similar Artists:</h2>"))
+    display(HTML(f"<p>1. {similar_1}"))
+    display(HTML(f"<p>2. {similar_2}"))
+    display(HTML(f"<p>3. {similar_3}"))
+    display(HTML(f"<p>4. {similar_4}"))
+    display(HTML(f"<p>5. {similar_5}"))
+    
