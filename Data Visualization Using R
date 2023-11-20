@@ -1,1 +1,107 @@
+countries <- countries_1_
+install.packages("ggmap")
+library(ggmap)
+library(ggplot2)
+install.packages("maps")
+library(maps)
+install.packages("mapproj")
+library(mapproj)
+install.packages("rworldmap")
+library(rworldmap)
+mapdat <- read.csv('mapdata.csv')
+View(shootings)
+View(countries)
+
+shootings$Total.Number.of.Victims
+sort(shootings$State)
+
+
+tmp.vec <- gsub("^\\s+|\\s+$","",shootings$State)
+sort(tmp.vec)
+View(tmp.vec)
+shootings$State<- tmp.vec
+
+library(tidyverse)
+agg.dat<-shootings %>% group_by(State) %>% summarise(victims=sum(Total.Number.of.Victims))
+colnames(agg.dat) <- c("state", "victims")
+
+num.cols <- 10
+my.cols.vec <- heat.colors(num.cols)
+
+pie(rep(1, num.cols), col = my.cols.vec)
+
+my.cols.vec<-rev(heat.colors(num.cols))
+
+pie(rep(1, num.cols), col = my.cols.vec)
+
+install.packages("plotrix")
+library(plotrix)
+
+agg.dat$index<-rescale()
+agg.dat$index<-rescale(x=agg.dat$victims, c(1,num.cols))
+
+agg.dat$color<-my.cols.vec[agg.dat$index]
+
+m<-maps::map('state')
+m$names
+plot(m$x, m$y)
+
+state.order <- match.map(database = 'state', regions = agg.dat$state, 
+                         exact = FALSE,  warn = TRUE)
+
+cbind(m$names, agg.dat$state[state.order]) 
+
+map("state", col = agg.dat$color[state.order], fill = TRUE
+    , resolution = 0,lty = 1, projection = "polyconic", border="tan")
+
+mtext(text = "Victims of mass shootings by state", side = 3, line = 1, cex=2)
+
+head(us.cities)  
+maps::map("state")
+colnames(us.cities)
+my.cols <- rep(rgb(1,.6,.2,.7), length(us.cities$name))
+
+my.cols[us.cities$capital>0]<-rgb(0.2, 0.6, 1, 0.9)
+view(us.cities)
+
+par(mar=c(0,0,0,0))
+mapps::map("state")   
+points(us.cities$long, us.cities$lat, 
+       col= my.cols , 
+       pch = 16 , 
+       cex =rescale(us.cities$pop, c(0.5,7)  )) 
+
+#Tidyverse Section
+states <- map_data("state")
+options(scipen=999)
+
+cities<-us.cities %>% mutate(capital = capital > 0)%>% 
+  filter(!(country.etc %in% c("AK","HI")))
+ggplot()+geom_polygon(data=states,aes(long,lat,group=group),fill="white",color="tan")+
+  geom_point(data=cities,aes(long,lat,color=capital,size=pop),alpha=.2)+
+  scale_size_area(max_size = 15)+
+  scale_color_manual(values = c(rgb(1,.6,.2),rgb(.2,.6,1)))+
+  ggtitle("US Cities by Population")+
+  coord_map("mercator")
+
+#Question 3 
+countries <- read_delim("countries.csv",delim = ";")
+View(countries)
+colnames(countries)
+colnames(countries) <-gsub("\\s+","_",colnames(countries))
+colnames(countries) <-gsub("[()]+","",colnames(countries))
+world<-map_data('world')
+View(world)
+w.names<-tibble(world=unique(world$region),type="w")
+c.names<-tibble(country=unique(countries$Country_en, type="c")
+
+View(w.names %>% full_join(c.names,by=c("world"="country")) %>% arrange(world) %>%
+       filter(is.na(type.x==type.y)))
+
+rwmGetISO3("United States")
+rwmGetISO3("United kingdom")
+rwmGetISO3(c("United Kingdom","United States"))
+
+
+
 
